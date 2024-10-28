@@ -9,5 +9,7 @@ namespace HaE_King_Off_The_Hill.Configuration
     public class KingOfTheHillConfig
     {
         public int PointsPerHour { get; set; }
+
+        public List<PointCounter> Counters { get; set; }
     }
 }

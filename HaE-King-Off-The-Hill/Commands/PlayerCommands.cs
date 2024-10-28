@@ -4,12 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Torch.Commands;
+using Torch.Commands.Permissions;
+using Torch.Mod;
+using Torch.Mod.Messages;
+using VRage.Game.ModAPI;
 
 namespace HaE_King_Off_The_Hill.Commands
 {
     [Category("koth")]
     public class PlayerCommands : CommandModule
     {
+        [Command("score", "Shows the current scores for all factions who have scored")]
+        [Permission(MyPromoteLevel.None)]
+        public void Score()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            var sb = new StringBuilder();
 
+            foreach (var counter in kothPlugin.GetCurrentScore())
+            {
+                sb.Append(counter.FactionId.ToString()).Append(" | ").AppendLine(counter.Points.ToString());
+            }
+
+            ModCommunication.SendMessageTo(new DialogMessage("Points", null, sb.ToString()), Context.Player.SteamUserId);
+        }
     }
 }
