@@ -18,9 +18,9 @@ namespace HaE_King_Off_The_Hill.UI
     /// <summary>
     /// Interaction logic for TorchConfigurationUC.xaml
     /// </summary>
-    public partial class TorchConfigurationUC : UserControl
+    public partial class TorchConfigurationUI : UserControl
     {
-        public TorchConfigurationUC()
+        public TorchConfigurationUI()
         {
             InitializeComponent();
         }

@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\Torch\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -73,17 +76,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\PlayerCommands.cs" />
+    <Compile Include="Configuration\KingOfTheHillConfig.cs" />
     <Compile Include="KingOffTheHill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\TorchConfigurationUC.xaml.cs">
-      <DependentUpon>TorchConfigurationUC.xaml</DependentUpon>
+    <Compile Include="UI\TorchConfigurationUI.xaml.cs">
+      <DependentUpon>TorchConfigurationUI.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\TorchConfigurationUC.xaml">
+    <Page Include="UI\TorchConfigurationUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Managers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
