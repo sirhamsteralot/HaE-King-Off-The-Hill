@@ -47,8 +47,8 @@ $manifestPath = "$releaseFolder/manifest.xml"
 $manifestContent | Out-File -FilePath $manifestPath -Encoding UTF8
 
 # Define the source files and destination folder
-$sourceDll = "HaE-King-Off-The-Hill/obj/x64/Release/HaE_PBLimiter.dll"
-$sourcePdb = "HaE-King-Off-The-Hill/obj/x64/Release/HaE_PBLimiter.pdb"
+$sourceDll = "HaE-King-Off-The-Hill/obj/x64/Release/HaE-King-Off-The-Hill.dll"
+$sourcePdb = "HaE-King-Off-The-Hill/obj/x64/Release/HaE-King-Off-The-Hill.pdb"
 $destinationFolder = $releaseFolder
 
 # Check if the source files exist, and copy them to the release folder
