@@ -3,6 +3,7 @@
 ## How to develop
 1. Edit & run "edit&run-before-opening.bat" to create the appropriate symlinks needed for devlopment
 2. open the .sln file in visual studio 2022 or newer
+3. run unit tests using the included unit test project & mstest
 
 # Creating releases
 1. check version number, plugin name & guid in create-release.ps1
