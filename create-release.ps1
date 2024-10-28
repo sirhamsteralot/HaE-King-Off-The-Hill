@@ -1,5 +1,5 @@
 # Path to the solution file
-$solutionPath = "HaE PBLimiter.sln"
+$solutionPath = "HaE-King-Off-The-Hill.sln"
 
 # Build the solution using MSBuild (make sure MSBuild is in your PATH or specify the full path to MSBuild.exe)
 $buildResult = & "MSBuild.exe" $solutionPath /p:Configuration=Release /p:Platform="x64"
@@ -16,11 +16,11 @@ if (-not $gitTag) {
     exit 1
 }
 
-$gitTag = "v1.1.2.1"
+$gitTag = "v0.0.0.1"
 
 # Ask for Plugin Name and GUID
-$pluginName = "HaE PBLimiter"
-$pluginGuid = "c1905f3f-86ac-4c54-96d2-32f71f677f6e"
+$pluginName = "HaE King Of The Hill"
+$pluginGuid = "d2ef4467-11de-4c35-bf9e-796358236c9e"
 
 # Get repository name
 $repoName = git remote get-url origin | ForEach-Object { ($_ -split "/")[-1] } | ForEach-Object { $_ -replace ".git$", "" }
@@ -47,8 +47,8 @@ $manifestPath = "$releaseFolder/manifest.xml"
 $manifestContent | Out-File -FilePath $manifestPath -Encoding UTF8
 
 # Define the source files and destination folder
-$sourceDll = "HaE PBLimiter/obj/x64/Release/HaE_PBLimiter.dll"
-$sourcePdb = "HaE PBLimiter/obj/x64/Release/HaE_PBLimiter.pdb"
+$sourceDll = "HaE-King-Off-The-Hill/obj/x64/Release/HaE_PBLimiter.dll"
+$sourcePdb = "HaE-King-Off-The-Hill/obj/x64/Release/HaE_PBLimiter.pdb"
 $destinationFolder = $releaseFolder
 
 # Check if the source files exist, and copy them to the release folder
@@ -61,7 +61,7 @@ if ((Test-Path $sourceDll) -and (Test-Path $sourcePdb)) {
 }
 
 # Zip the release folder
-$zipFilePath = "$releaseFolder/HaE PBLimiter.zip"
+$zipFilePath = "$releaseFolder/HaE-King-Off-The-Hill.zip"
 if (Test-Path $zipFilePath) {
     Remove-Item $zipFilePath
 }
