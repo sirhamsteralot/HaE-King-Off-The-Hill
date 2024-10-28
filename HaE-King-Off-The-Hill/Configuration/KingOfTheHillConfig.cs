@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HaE_King_Off_The_Hill.Configuration
 {
-    internal class KingOfTheHillConfig
+    public class KingOfTheHillConfig
     {
         public int PointsPerHour { get; set; }
     }
