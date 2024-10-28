@@ -27,7 +27,7 @@ namespace HaE_King_Off_The_Hill
         {
             base.Init(torch);
 
-            _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name, ".cfg"));
+            _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
         }
 
         public UserControl GetControl()
