@@ -8,8 +8,36 @@ namespace HaE_King_Off_The_Hill.Configuration
 {
     public class KingOfTheHillConfig
     {
-        public int PointsPerHour { get; set; }
+        public class Options
+        {
+            public int PointsPerHour { get; set; }
+            public long ButtonGridEntityId { get; set; }
+            public bool ButtonGridInvulnerable { get; set; }
+            public string ButtonName { get; set; }
+
+            public Options()
+            {
+
+            }
+
+            public Options(Options clone)
+            {
+                this.PointsPerHour = clone.PointsPerHour;
+                this.ButtonGridEntityId = clone.ButtonGridEntityId;
+                this.ButtonGridInvulnerable = clone.ButtonGridInvulnerable;
+                this.ButtonName = String.Copy(clone.ButtonName);
+            }
+
+            public override string ToString()
+            {
+                return $"{PointsPerHour}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
+            }
+        }
 
         public List<PointCounter> Counters { get; set; }
+
+        public Options Configuration { get; set; }
     }
+
+
 }

@@ -13,6 +13,12 @@ namespace HaE_King_Off_The_Hill.Configuration
 
         public PointCounter() { }
 
+        public PointCounter(PointCounter clone) 
+        { 
+            FactionId = clone.FactionId;
+            Points = clone.Points;
+        }
+
         public PointCounter(long factionId, int points)
         {
             this.FactionId = factionId;

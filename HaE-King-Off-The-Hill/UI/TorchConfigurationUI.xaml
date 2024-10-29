@@ -7,6 +7,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Column="0" Grid.Row="0" Text="Hill Grid" Margin="10" VerticalAlignment="Center"></TextBlock>
+        <TextBox x:Name="gridEntityId_tb" Grid.Column="1" Grid.Row="0" Margin="10" ToolTip="EntityId of the grid that holds the button"></TextBox>
+        <CheckBox x:Name="makeInvulnerable_cb" Grid.Column="2" Grid.Row="0" Margin="10" Content="Make Invulnerable" VerticalAlignment="Center"></CheckBox>
+
+        <TextBlock Grid.Column="0" Grid.Row="1" Text="Button Name" Margin="10" VerticalAlignment="Center"></TextBlock>
+        <TextBox x:Name="buttonName_tb" Grid.Column="1" Grid.Row="1" Margin="10" ToolTip="Exact Name of the button on the grid"></TextBox>
+
+        <Button Grid.Column="1" Grid.Row="4" Margin="10" Content="Apply Changes" Click="Apply_Click"></Button>
     </Grid>
 </UserControl>

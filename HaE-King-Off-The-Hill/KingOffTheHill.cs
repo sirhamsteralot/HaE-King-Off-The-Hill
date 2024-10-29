@@ -1,11 +1,14 @@
 ﻿using HaE_King_Off_The_Hill.Configuration;
 using HaE_King_Off_The_Hill.UI;
 using NLog;
+using Sandbox.Engine.Utils;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Torch;
@@ -22,8 +25,10 @@ namespace HaE_King_Off_The_Hill
 
         private TorchConfigurationUI _configurationUI = null;
         private Persistent<KingOfTheHillConfig> _configuration = null;
-        private Dictionary<long, PointCounter> _pointCounters = null;
+        private ConcurrentDictionary<long, PointCounter> _pointCounters = null;
 
+        private BlockingCollection<Action> _actionQueue = null;
+        private Thread _pluginThread = null;
 
         public KingOffTheHill() : base() { }
 
@@ -31,8 +36,24 @@ namespace HaE_King_Off_The_Hill
         {
             base.Init(torch);
 
-            _pointCounters = new Dictionary<long, PointCounter>();
+            _actionQueue = new BlockingCollection<Action>();
+            _pluginThread = new Thread(() => {
+                foreach (var action in _actionQueue.GetConsumingEnumerable())
+                {
+                    action.Invoke();
+                }
+            });
+
+            _pluginThread.Start();
+
+            torch.SessionUnloading += SaveConfig;
+
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
+            _pointCounters = new ConcurrentDictionary<long, PointCounter>();
+            foreach (var counter in _configuration.Data.Counters)
+            {
+                _pointCounters.TryAdd(counter.FactionId, new PointCounter(counter));
+            }
 
             Scoreboard = new ClientScoreboard();
 
@@ -42,6 +63,11 @@ namespace HaE_King_Off_The_Hill
             AddScore(101231231, 999);
         }
 
+        public void InvokeOnKOTHThread(Action action)
+        {
+            _actionQueue.Add(action);
+        }
+
         public List<PointCounter> GetCurrentScore()
         {
             return _pointCounters.Values.ToList();
@@ -49,17 +75,21 @@ namespace HaE_King_Off_The_Hill
 
         public void SaveConfig()
         {
-            if (_configuration != null)
-            {
-                _configuration.Data.Counters.Clear();
-
-                foreach (var counter in _pointCounters.Values.ToList())
+            InvokeOnKOTHThread(() => {
+                if (_configuration != null)
                 {
-                    _configuration.Data.Counters.Add(counter);
-                }
+                    _configuration.Data.Counters.Clear();
 
-                _configuration.Save();
-            }
+                    foreach (var counter in _pointCounters.Values.ToList())
+                    {
+                        _configuration.Data.Counters.Add(counter);
+                    }
+                    _configuration.Save();
+
+                    Log.Info($"Saved configuration");
+                }
+            });
+
         }
 
         public void AddScore(long factionId, int points)
@@ -70,7 +100,7 @@ namespace HaE_King_Off_The_Hill
             }
             else
             {
-                _pointCounters.Add(factionId, new PointCounter(factionId, points));
+                _pointCounters.TryAdd(factionId, new PointCounter(factionId, points));
             }
         }
 
@@ -78,7 +108,7 @@ namespace HaE_King_Off_The_Hill
         {
             if (_configurationUI == null)
             {
-                _configurationUI = new TorchConfigurationUI();
+                _configurationUI = new TorchConfigurationUI(this);
             }
 
             return _configurationUI;
@@ -87,6 +117,24 @@ namespace HaE_King_Off_The_Hill
         public void UpdateScoreBoard()
         {
             Scoreboard.UpdateDisplay(_pointCounters.Values.ToList());
+        }
+
+        /// <summary>
+        /// Must be invoked from koth thread using InvokeOnKOTHThread(x)
+        /// </summary>
+        /// <param name="config"></param>
+        public void UpdateConfiguration(KingOfTheHillConfig.Options config)
+        {
+            _configuration.Data.Configuration = config;
+
+            Log.Info($"Updated configuration: {config.ToString()}");
+
+            SaveConfig();
+        }
+
+        public KingOfTheHillConfig.Options GetConfiguration()
+        {
+             return new KingOfTheHillConfig.Options(_configuration.Data.Configuration);
         }
     }
 }
