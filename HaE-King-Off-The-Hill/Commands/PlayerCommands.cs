@@ -28,5 +28,29 @@ namespace HaE_King_Off_The_Hill.Commands
 
             ModCommunication.SendMessageTo(new DialogMessage("Points", null, sb.ToString()), Context.Player.SteamUserId);
         }
+
+        [Command("show", "enables showing scoreboard for player")]
+        [Permission(MyPromoteLevel.None)]
+        public void Show()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, true);
+        }
+
+        [Command("hide", "disables showing scoreboard for player")]
+        [Permission(MyPromoteLevel.None)]
+        public void Hide()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, false);
+        }
+
+        [Command("update", "updates scores on screen for all players")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void Update()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            kothPlugin.UpdateScoreBoard();
+        }
     }
 }

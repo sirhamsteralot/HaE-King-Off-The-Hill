@@ -18,5 +18,10 @@ namespace HaE_King_Off_The_Hill.Configuration
             this.FactionId = factionId;
             this.Points = points;
         }
+
+        public override string ToString()
+        {
+            return $"{FactionId}, points: {Points}";
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace HaE_King_Off_The_Hill
 {
     public class KingOffTheHill : TorchPluginBase, IWpfPlugin
     {
-
+        public ClientScoreboard Scoreboard { get; set; } = null;
 
         private readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -33,6 +33,8 @@ namespace HaE_King_Off_The_Hill
 
             _pointCounters = new Dictionary<long, PointCounter>();
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
+
+            Scoreboard = new ClientScoreboard();
 
             // Test Code;
             AddScore(10, 999);
@@ -80,6 +82,11 @@ namespace HaE_King_Off_The_Hill
             }
 
             return _configurationUI;
+        }
+
+        public void UpdateScoreBoard()
+        {
+            Scoreboard.UpdateDisplay(_pointCounters.Values.ToList());
         }
     }
 }
