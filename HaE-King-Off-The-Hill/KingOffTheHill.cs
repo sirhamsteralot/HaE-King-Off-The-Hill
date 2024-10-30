@@ -30,6 +30,10 @@ namespace HaE_King_Off_The_Hill
         private BlockingCollection<Action> _actionQueue = null;
         private Thread _pluginThread = null;
 
+        private Timer _scoreTimer = null;
+
+        private long _king = 0;
+
         public KingOffTheHill() : base() { }
 
         public override void Init(ITorchBase torch)
@@ -46,6 +50,8 @@ namespace HaE_King_Off_The_Hill
 
             _pluginThread.Start();
 
+
+
             torch.SessionUnloading += SaveConfig;
 
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
@@ -57,10 +63,33 @@ namespace HaE_King_Off_The_Hill
 
             Scoreboard = new ClientScoreboard();
 
-            // Test Code;
-            AddScore(10, 999);
-            AddScore(2, 999);
-            AddScore(101231231, 999);
+            int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
+            _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
+        }
+
+        public void TimerCallback(object state) {
+            _actionQueue.Add(() => { 
+                if (_king != 0)
+                {
+                    PointCounter counter = null;
+
+                    if (!_pointCounters.TryGetValue(_king, out counter))
+                    {
+                        counter = new PointCounter(_king, 0);
+                        _pointCounters.TryAdd(_king, counter);
+                    }
+
+                    counter.AddPercentage(_configuration.Data.Configuration.PercentagePerPeriod);
+                }
+            });
+        }
+
+        public void UplinkCompletedCallback(long factionId)
+        {
+            if (_pointCounters.TryGetValue(factionId, out var counter))
+            {
+                counter.AddScore(_configuration.Data.Configuration.PointsPerCompletion);
+            }
         }
 
         public void InvokeOnKOTHThread(Action action)
@@ -130,6 +159,9 @@ namespace HaE_King_Off_The_Hill
             Log.Info($"Updated configuration: {config.ToString()}");
 
             SaveConfig();
+
+            int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
+            _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
         }
 
         public KingOfTheHillConfig.Options GetConfiguration()
