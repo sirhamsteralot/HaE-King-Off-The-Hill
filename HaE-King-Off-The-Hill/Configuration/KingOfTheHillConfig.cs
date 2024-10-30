@@ -10,9 +10,9 @@ namespace HaE_King_Off_The_Hill.Configuration
     {
         public class Options
         {
-            public int PeriodTimeS { get; set; }
-            public int PercentagePerPeriod { get; set; }
-            public int PointsPerCompletion { get; set; }
+            public int PeriodTimeS { get; set; } = 10;
+            public int PercentagePerPeriod { get; set; } = 1;
+            public int PointsPerCompletion { get; set; } = 10;
             public long ButtonGridEntityId { get; set; }
             public bool ButtonGridInvulnerable { get; set; }
             public string ButtonName { get; set; }

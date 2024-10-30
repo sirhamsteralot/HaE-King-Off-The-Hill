@@ -2,6 +2,12 @@
 using HaE_King_Off_The_Hill.UI;
 using NLog;
 using Sandbox.Engine.Utils;
+using Sandbox.Game;
+using Sandbox.Game.Entities;
+using Sandbox.Game.Entities.Cube;
+using Sandbox.ModAPI;
+using SpaceEngineers.Game.Entities.Blocks;
+using SpaceEngineers.Game.ModAPI;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,6 +20,8 @@ using System.Windows.Controls;
 using Torch;
 using Torch.API;
 using Torch.API.Plugins;
+using VRage.Game.ModAPI;
+using VRage.ModAPI;
 
 namespace HaE_King_Off_The_Hill
 {
@@ -33,6 +41,7 @@ namespace HaE_King_Off_The_Hill
         private Timer _scoreTimer = null;
 
         private long _king = 0;
+        private IMyButtonPanel _hill = null;
 
         public KingOffTheHill() : base() { }
 
@@ -50,7 +59,8 @@ namespace HaE_King_Off_The_Hill
 
             _pluginThread.Start();
 
-            torch.SessionUnloading += SaveConfig;
+            torch.SessionUnloading += Torch_SessionUnloading;
+            torch.SessionLoaded += Torch_SessionLoaded;
 
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
             _pointCounters = new ConcurrentDictionary<long, PointCounter>();
@@ -100,7 +110,7 @@ namespace HaE_King_Off_The_Hill
             return _pointCounters.Values.ToList();
         }
 
-        public void SaveConfig()
+        public void Torch_SessionUnloading()
         {
             InvokeOnKOTHThread(() => {
                 if (_configuration != null)
@@ -118,17 +128,9 @@ namespace HaE_King_Off_The_Hill
             });
 
         }
-
-        public void AddScore(long factionId, int points)
+        private void Torch_SessionLoaded()
         {
-            if (_pointCounters.TryGetValue(factionId, out PointCounter score))
-            {
-                score.Points += points;
-            }
-            else
-            {
-                _pointCounters.TryAdd(factionId, new PointCounter(factionId, points));
-            }
+            HookButton();
         }
 
         public UserControl GetControl()
@@ -156,10 +158,77 @@ namespace HaE_King_Off_The_Hill
 
             Log.Info($"Updated configuration: {config.ToString()}");
 
-            SaveConfig();
+            Torch_SessionUnloading();
 
             int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
+
+            HookButton();
+        }
+
+        public void HookButton()
+        {
+            if (_hill != null)
+            {
+                _hill.ButtonPressed -= KingOffTheHill_ButtonPressed;
+            }
+
+            if (Torch.CurrentSession?.KeenSession != null)
+            {
+                IMyEntity entity = MyAPIGateway.Entities.GetEntity(x => x.EntityId == _configuration.Data.Configuration.ButtonGridEntityId);
+
+                if (entity != null)
+                {
+                    IMyCubeGrid cubegrid = entity as IMyCubeGrid;
+                    if (cubegrid == null) {
+                        Log.Warn("failed to cast entity to cubegrid!");
+                        return;
+                    }
+
+                    Log.Info($"cubegrid {cubegrid.CustomName} found!");
+
+                    List<IMySlimBlock> slimblocks = new List<IMySlimBlock>();
+
+                    cubegrid.GetBlocks(slimblocks, x => { return x.FatBlock is IMyButtonPanel && ((IMyButtonPanel)x.FatBlock).CustomName == _configuration.Data.Configuration.ButtonName; });
+
+                    Log.Info($"{slimblocks.Count()} Found on {cubegrid.CustomName}, hooking to 1st...");
+
+                    if (slimblocks.Count > 0)
+                    {
+                        _hill = slimblocks.First().FatBlock as IMyButtonPanel;
+                        _hill.ButtonPressed += KingOffTheHill_ButtonPressed;
+                        Log.Info($"{_hill.CustomName} Hooked!");
+                    }
+                } else
+                {
+                    Log.Warn($"Failed to get cubegrid with ID: {_configuration.Data.Configuration.ButtonGridEntityId} !");
+                }
+            }
+        }
+
+        private void KingOffTheHill_ButtonPressed(int buttonId)
+        {
+
+            IMyPlayer closest = null;
+            double closestSq = double.MaxValue;
+            if (_hill == null)
+            {
+                Log.Warn("No Hill registered! why did this trigger?!");
+                return;
+            }
+
+            MyAPIGateway.Players.GetPlayers(new List<IMyPlayer>(), x => {
+                double distanceSq = (x.GetPosition() - _hill.GetPosition()).LengthSquared();
+                if (distanceSq < closestSq)
+                {
+                    closest = x;
+                    closestSq = distanceSq;
+                }
+
+                return false;
+            });
+
+            Log.Info($"Button {buttonId} Pressed by {closest?.DisplayName ?? "error"}!");
         }
 
         public KingOfTheHillConfig.Options GetConfiguration()
