@@ -50,8 +50,6 @@ namespace HaE_King_Off_The_Hill
 
             _pluginThread.Start();
 
-
-
             torch.SessionUnloading += SaveConfig;
 
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
@@ -68,7 +66,7 @@ namespace HaE_King_Off_The_Hill
         }
 
         public void TimerCallback(object state) {
-            _actionQueue.Add(() => { 
+            InvokeOnKOTHThread(() => { 
                 if (_king != 0)
                 {
                     PointCounter counter = null;
