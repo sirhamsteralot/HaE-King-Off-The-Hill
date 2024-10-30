@@ -15,7 +15,7 @@ namespace HaE_King_Off_The_Hill.Configuration
             public int PointsPerCompletion { get; set; } = 10;
             public long ButtonGridEntityId { get; set; }
             public bool ButtonGridInvulnerable { get; set; }
-            public string ButtonName { get; set; }
+            public string ButtonName { get; set; } = "";
 
             public Options()
             {

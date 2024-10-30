@@ -64,6 +64,12 @@ namespace HaE_King_Off_The_Hill
 
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
             _pointCounters = new ConcurrentDictionary<long, PointCounter>();
+
+            if (_configuration.Data.Counters == null)
+                _configuration.Data.Counters = new List<PointCounter>();
+            if (_configuration.Data.Configuration == null)
+                _configuration.Data.Configuration = new KingOfTheHillConfig.Options();
+
             foreach (var counter in _configuration.Data.Counters)
             {
                 _pointCounters.TryAdd(counter.FactionId, new PointCounter(counter));
@@ -89,14 +95,37 @@ namespace HaE_King_Off_The_Hill
 
                     counter.AddPercentage(_configuration.Data.Configuration.PercentagePerPeriod);
                 }
+
+                UpdateScoreBoard();
             });
         }
 
-        public void UplinkCompletedCallback(long factionId)
+        private void Counter_UplinkComplete(long obj)
         {
-            if (_pointCounters.TryGetValue(factionId, out var counter))
+            InvokeOnKOTHThread(() => {
+                if (_pointCounters.TryGetValue(obj, out PointCounter counter))
+                {
+                    counter.AddScore(_configuration.Data.Configuration.PointsPerCompletion);
+                }
+            });
+        }
+
+        public void TakeControl(long factionId)
+        {
+            if (factionId == 0)
+                return;
+
+            Log.Info($"{factionId} Took Control!");
+
+            _king = factionId;
+
+            PointCounter counter = null;
+
+            if (!_pointCounters.TryGetValue(_king, out counter))
             {
-                counter.AddScore(_configuration.Data.Configuration.PointsPerCompletion);
+                counter = new PointCounter(_king, 0);
+                _pointCounters.TryAdd(factionId, counter);
+                counter.UplinkComplete += Counter_UplinkComplete;
             }
         }
 
@@ -229,6 +258,14 @@ namespace HaE_King_Off_The_Hill
             });
 
             Log.Info($"Button {buttonId} Pressed by {closest?.DisplayName ?? "error"}!");
+
+            var faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(closest.PlayerID);
+            if (faction != null)
+            {
+                InvokeOnKOTHThread(() => {
+                    TakeControl(faction.FactionId);
+                });
+            }
         }
 
         public KingOfTheHillConfig.Options GetConfiguration()

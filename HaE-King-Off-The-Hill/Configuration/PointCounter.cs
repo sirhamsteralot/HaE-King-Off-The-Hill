@@ -1,8 +1,11 @@
-﻿using System;
+﻿using NLog.Fluent;
+using Sandbox.ModAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VRage.Game.ModAPI;
 
 namespace HaE_King_Off_The_Hill.Configuration
 {
@@ -30,7 +33,7 @@ namespace HaE_King_Off_The_Hill.Configuration
 
         public void AddPercentage(int percentage)
         {
-            UplinkCompletionPercent = percentage;
+            UplinkCompletionPercent += percentage;
             if (UplinkCompletionPercent > 100)
             {
                 UplinkCompletionPercent = 0;
@@ -45,7 +48,19 @@ namespace HaE_King_Off_The_Hill.Configuration
 
         public override string ToString()
         {
-            return $"{FactionId}, points: {Points}";
+            IMyFaction faction = MyAPIGateway.Session.Factions.TryGetFactionById(FactionId);
+            string factionTag = "";
+
+            if (faction != null)
+            {
+                Log.Info($"Getting faction by id {FactionId} failed..");
+                factionTag = faction.Tag;
+            } else
+            {
+                factionTag = FactionId.ToString();
+            }
+
+            return $"{factionTag}: {Points} pts, {UplinkCompletionPercent} %";
         }
     }
 }
