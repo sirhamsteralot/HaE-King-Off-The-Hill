@@ -18,12 +18,12 @@ namespace HaE_King_Off_The_Hill.Configuration
 
             public Options()
             {
-
             }
 
             public Options(Options clone)
             {
                 this.PeriodTimeS = clone.PeriodTimeS;
+                this.PointsPerPeriod = clone.PointsPerPeriod;
                 this.ButtonGridEntityId = clone.ButtonGridEntityId;
                 this.ButtonGridInvulnerable = clone.ButtonGridInvulnerable;
                 this.ButtonName = String.Copy(clone.ButtonName);
@@ -31,7 +31,7 @@ namespace HaE_King_Off_The_Hill.Configuration
 
             public override string ToString()
             {
-                return $"{PeriodTimeS}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
+                return $"{PeriodTimeS}, {PointsPerPeriod}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
             }
         }
 

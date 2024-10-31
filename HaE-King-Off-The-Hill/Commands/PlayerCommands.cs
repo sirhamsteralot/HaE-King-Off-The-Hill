@@ -44,13 +44,5 @@ namespace HaE_King_Off_The_Hill.Commands
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, false);
         }
-
-        [Command("update", "updates scores on screen for all players")]
-        [Permission(MyPromoteLevel.Admin)]
-        public void Update()
-        {
-            var kothPlugin = Context.Plugin as KingOffTheHill;
-            kothPlugin.UpdateScoreBoard();
-        }
     }
 }
