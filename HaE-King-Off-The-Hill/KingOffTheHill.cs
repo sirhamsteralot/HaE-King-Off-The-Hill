@@ -1,6 +1,7 @@
 ﻿using HaE_King_Off_The_Hill.Configuration;
 using HaE_King_Off_The_Hill.UI;
 using NLog;
+using Sandbox;
 using Sandbox.Engine.Utils;
 using Sandbox.Game;
 using Sandbox.Game.Entities;
@@ -60,8 +61,7 @@ namespace HaE_King_Off_The_Hill
 
             _pluginThread.Start();
 
-            torch.SessionUnloading += Torch_SessionUnloading;
-            torch.SessionLoaded += Torch_SessionLoaded;
+            torch.GameStateChanged += Torch_GameStateChanged;
 
             _configuration = Persistent<KingOfTheHillConfig>.Load(Path.Combine(StoragePath, Name + ".cfg"));
             _pointCounters = new ConcurrentDictionary<long, PointCounter>();
@@ -80,6 +80,42 @@ namespace HaE_King_Off_The_Hill
 
             int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
+        }
+
+        private void Torch_GameStateChanged(MySandboxGame game, TorchGameState newState)
+        {
+            switch (newState)
+            {
+                case TorchGameState.Loaded:
+                    Torch_SessionLoaded();
+                    break;
+                case TorchGameState.Unloading:
+                    Torch_SessionUnloading();
+                    break;
+            }
+        }
+
+        public void Torch_SessionUnloading()
+        {
+            InvokeOnKOTHThread(() => {
+                if (_configuration != null)
+                {
+                    _configuration.Data.Counters.Clear();
+
+                    foreach (var counter in _pointCounters.Values.ToList())
+                    {
+                        _configuration.Data.Counters.Add(counter);
+                    }
+                    _configuration.Save();
+
+                    Log.Info($"Saved configuration");
+                }
+            });
+
+        }
+        private void Torch_SessionLoaded()
+        {
+            HookButton();
         }
 
         public void TimerCallback(object state) {
@@ -127,29 +163,6 @@ namespace HaE_King_Off_The_Hill
         public List<PointCounter> GetCurrentScore()
         {
             return _pointCounters.Values.ToList();
-        }
-
-        public void Torch_SessionUnloading()
-        {
-            InvokeOnKOTHThread(() => {
-                if (_configuration != null)
-                {
-                    _configuration.Data.Counters.Clear();
-
-                    foreach (var counter in _pointCounters.Values.ToList())
-                    {
-                        _configuration.Data.Counters.Add(counter);
-                    }
-                    _configuration.Save();
-
-                    Log.Info($"Saved configuration");
-                }
-            });
-
-        }
-        private void Torch_SessionLoaded()
-        {
-            HookButton();
         }
 
         public UserControl GetControl()
