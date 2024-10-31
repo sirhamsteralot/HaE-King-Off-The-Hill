@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using Torch;
 using Torch.API;
 using Torch.API.Plugins;
+using VRage.Game.Entity;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 
@@ -197,42 +198,49 @@ namespace HaE_King_Off_The_Hill
 
         public void HookButton()
         {
-            if (_hill != null)
-            {
-                _hill.ButtonPressed -= KingOffTheHill_ButtonPressed;
-            }
+            Torch.Invoke(() => {
 
-            if (Torch.CurrentSession?.KeenSession != null)
-            {
-                IMyEntity entity = MyAPIGateway.Entities.GetEntity(x => x.EntityId == _configuration.Data.Configuration.ButtonGridEntityId);
-
-                if (entity != null)
+                if (_hill != null)
                 {
-                    IMyCubeGrid cubegrid = entity as IMyCubeGrid;
-                    if (cubegrid == null) {
-                        Log.Warn("failed to cast entity to cubegrid!");
-                        return;
-                    }
-
-                    Log.Info($"cubegrid {cubegrid.CustomName} found!");
-
-                    List<IMySlimBlock> slimblocks = new List<IMySlimBlock>();
-
-                    cubegrid.GetBlocks(slimblocks, x => { return x.FatBlock is IMyButtonPanel && ((IMyButtonPanel)x.FatBlock).CustomName == _configuration.Data.Configuration.ButtonName; });
-
-                    Log.Info($"{slimblocks.Count()} Found on {cubegrid.CustomName}, hooking to 1st...");
-
-                    if (slimblocks.Count > 0)
-                    {
-                        _hill = slimblocks.First().FatBlock as IMyButtonPanel;
-                        _hill.ButtonPressed += KingOffTheHill_ButtonPressed;
-                        Log.Info($"{_hill.CustomName} Hooked!");
-                    }
-                } else
-                {
-                    Log.Warn($"Failed to get cubegrid with ID: {_configuration.Data.Configuration.ButtonGridEntityId} !");
+                    _hill.ButtonPressed -= KingOffTheHill_ButtonPressed;
                 }
-            }
+
+                if (Torch.CurrentSession?.KeenSession != null)
+                {
+                    MyEntity entity = MyEntities.GetEntityById(_configuration.Data.Configuration.ButtonGridEntityId);
+
+                    if (entity != null)
+                    {
+                        IMyCubeGrid cubegrid = entity as IMyCubeGrid;
+                        if (cubegrid == null)
+                        {
+                            Log.Warn("failed to cast entity to cubegrid!");
+                            return;
+                        }
+
+                        Log.Info($"cubegrid {cubegrid.CustomName} found!");
+
+                        List<IMySlimBlock> slimblocks = new List<IMySlimBlock>();
+
+                        cubegrid.GetBlocks(slimblocks, x => { return x.FatBlock is IMyButtonPanel && ((IMyButtonPanel)x.FatBlock).CustomName == _configuration.Data.Configuration.ButtonName; });
+
+                        Log.Info($"{slimblocks.Count()} Found on {cubegrid.CustomName}, hooking to 1st...");
+
+                        if (slimblocks.Count > 0)
+                        {
+                            _hill = slimblocks.First().FatBlock as IMyButtonPanel;
+                            _hill.ButtonPressed += KingOffTheHill_ButtonPressed;
+                            Log.Info($"{_hill.CustomName} Hooked!");
+                        }
+                    }
+                    else
+                    {
+                        Log.Warn($"Failed to get cubegrid with ID: {_configuration.Data.Configuration.ButtonGridEntityId} !");
+                    }
+                }
+
+            });
+
         }
 
         private void KingOffTheHill_ButtonPressed(int buttonId)
