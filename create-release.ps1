@@ -16,8 +16,6 @@ if (-not $gitTag) {
     exit 1
 }
 
-$gitTag = "v0.0.0.1"
-
 # Ask for Plugin Name and GUID
 $pluginName = "HaE King Of The Hill"
 $pluginGuid = "d2ef4467-11de-4c35-bf9e-796358236c9e"
