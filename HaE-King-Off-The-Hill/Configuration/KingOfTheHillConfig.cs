@@ -11,8 +11,7 @@ namespace HaE_King_Off_The_Hill.Configuration
         public class Options
         {
             public int PeriodTimeS { get; set; } = 10;
-            public int PercentagePerPeriod { get; set; } = 1;
-            public int PointsPerCompletion { get; set; } = 10;
+            public int PointsPerPeriod { get; set; } = 1;
             public long ButtonGridEntityId { get; set; }
             public bool ButtonGridInvulnerable { get; set; }
             public string ButtonName { get; set; } = "";
@@ -25,7 +24,6 @@ namespace HaE_King_Off_The_Hill.Configuration
             public Options(Options clone)
             {
                 this.PeriodTimeS = clone.PeriodTimeS;
-                this.PercentagePerPeriod = clone.PercentagePerPeriod;
                 this.ButtonGridEntityId = clone.ButtonGridEntityId;
                 this.ButtonGridInvulnerable = clone.ButtonGridInvulnerable;
                 this.ButtonName = String.Copy(clone.ButtonName);
@@ -33,7 +31,7 @@ namespace HaE_King_Off_The_Hill.Configuration
 
             public override string ToString()
             {
-                return $"{PeriodTimeS}, {PercentagePerPeriod}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
+                return $"{PeriodTimeS}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
             }
         }
 

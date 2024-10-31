@@ -94,20 +94,10 @@ namespace HaE_King_Off_The_Hill
                         _pointCounters.TryAdd(_king, counter);
                     }
 
-                    counter.AddPercentage(_configuration.Data.Configuration.PercentagePerPeriod);
+                    counter.AddScore(_configuration.Data.Configuration.PointsPerPeriod);
                 }
 
                 UpdateScoreBoard();
-            });
-        }
-
-        private void Counter_UplinkComplete(long obj)
-        {
-            InvokeOnKOTHThread(() => {
-                if (_pointCounters.TryGetValue(obj, out PointCounter counter))
-                {
-                    counter.AddScore(_configuration.Data.Configuration.PointsPerCompletion);
-                }
             });
         }
 
@@ -126,7 +116,6 @@ namespace HaE_King_Off_The_Hill
             {
                 counter = new PointCounter(_king, 0);
                 _pointCounters.TryAdd(factionId, counter);
-                counter.UplinkComplete += Counter_UplinkComplete;
             }
         }
 

@@ -13,9 +13,6 @@ namespace HaE_King_Off_The_Hill.Configuration
     {
         public long FactionId { get; set; }
         public int Points { get; set; }
-        public int UplinkCompletionPercent { get; set; }
-
-        public event Action<long> UplinkComplete;
 
         public PointCounter() { }
 
@@ -29,16 +26,6 @@ namespace HaE_King_Off_The_Hill.Configuration
         {
             this.FactionId = factionId;
             this.Points = points;
-        }
-
-        public void AddPercentage(int percentage)
-        {
-            UplinkCompletionPercent += percentage;
-            if (UplinkCompletionPercent > 100)
-            {
-                UplinkCompletionPercent = 0;
-                UplinkComplete?.Invoke(FactionId);
-            }
         }
 
         public void AddScore(int score)
@@ -60,7 +47,7 @@ namespace HaE_King_Off_The_Hill.Configuration
                 factionTag = FactionId.ToString();
             }
 
-            return $"{factionTag}: {Points} pts, {UplinkCompletionPercent} %";
+            return $"{factionTag}: {Points} pts";
         }
     }
 }
