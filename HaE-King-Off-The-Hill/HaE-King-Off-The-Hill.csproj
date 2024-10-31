@@ -99,6 +99,10 @@
     <Reference Include="VRage.Game">
       <HintPath>..\Bin64\VRage.Game.dll</HintPath>
     </Reference>
+    <Reference Include="VRage.Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Bin64\VRage.Library.dll</HintPath>
+    </Reference>
     <Reference Include="VRage.Math, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Bin64\VRage.Math.dll</HintPath>
@@ -109,6 +113,7 @@
     <Compile Include="Commands\PlayerCommands.cs" />
     <Compile Include="Configuration\KingOfTheHillConfig.cs" />
     <Compile Include="Configuration\PointCounter.cs" />
+    <Compile Include="InterferenceManager.cs" />
     <Compile Include="KingOffTheHill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ClientScoreboard.cs" />

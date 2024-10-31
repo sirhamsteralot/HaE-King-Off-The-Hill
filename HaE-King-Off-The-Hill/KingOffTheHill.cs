@@ -32,6 +32,7 @@ namespace HaE_King_Off_The_Hill
     public class KingOffTheHill : TorchPluginBase, IWpfPlugin
     {
         public ClientScoreboard Scoreboard { get; set; } = null;
+        public InterferenceManager InterferenceManager { get; set; } = null;
 
         private readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -83,6 +84,7 @@ namespace HaE_King_Off_The_Hill
             }
 
             Scoreboard = new ClientScoreboard();
+            InterferenceManager = new InterferenceManager();
 
             int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);

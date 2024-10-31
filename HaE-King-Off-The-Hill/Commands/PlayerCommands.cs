@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sandbox.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,41 @@ namespace HaE_King_Off_The_Hill.Commands
         {
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, false);
+        }
+
+        [Command("spawnattack", "spawns a factorum encounter at the hill")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void SpawnAttack()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+
+
+            try
+            {
+                if (Context.Args.Count > 0)
+                {
+                    kothPlugin.InterferenceManager.CreateInterference(Context.Player.GetPosition() + Context.Player.Character.WorldMatrix.Up * 100, Context.Player.Character.WorldMatrix.Forward, Context.Args[0]);
+                    Context.Respond("interference spawned!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Context.Respond(ex.Message);
+            }
+        }
+
+        [Command("getprefabs", "gets all possible prefabs")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void GetPrefabs()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var prefab in MyDefinitionManager.Static.GetPrefabDefinitions())
+            {
+                stringBuilder.AppendLine(prefab.Key + " : " + prefab.Value.PrefabPath);
+            }
+
+            ModCommunication.SendMessageTo(new DialogMessage("Prefabs", null, stringBuilder.ToString()), Context.Player.SteamUserId);
         }
     }
 }
