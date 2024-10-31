@@ -6,6 +6,7 @@ using Sandbox.Engine.Utils;
 using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Cube;
+using Sandbox.Game.World;
 using Sandbox.ModAPI;
 using SpaceEngineers.Game.Entities.Blocks;
 using SpaceEngineers.Game.ModAPI;
@@ -24,6 +25,7 @@ using Torch.API.Plugins;
 using VRage.Game.Entity;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
+using VRageMath;
 
 namespace HaE_King_Off_The_Hill
 {
@@ -39,6 +41,7 @@ namespace HaE_King_Off_The_Hill
 
         private BlockingCollection<Action> _actionQueue = null;
         private Thread _pluginThread = null;
+        private CancellationTokenSource _continueThread = new CancellationTokenSource();
 
         private Timer _scoreTimer = null;
 
@@ -53,10 +56,13 @@ namespace HaE_King_Off_The_Hill
 
             _actionQueue = new BlockingCollection<Action>();
             _pluginThread = new Thread(() => {
-                foreach (var action in _actionQueue.GetConsumingEnumerable())
+                try
                 {
-                    action.Invoke();
-                }
+                    foreach (var action in _actionQueue.GetConsumingEnumerable(_continueThread.Token))
+                    {
+                        action.Invoke();
+                    }
+                } catch (OperationCanceledException) { }
             });
 
             _pluginThread.Start();
@@ -84,18 +90,36 @@ namespace HaE_King_Off_The_Hill
 
         private void Torch_GameStateChanged(MySandboxGame game, TorchGameState newState)
         {
+            Log.Info($"new gamestate: {newState.ToString()}");
+
             switch (newState)
             {
                 case TorchGameState.Loaded:
-                    Torch_SessionLoaded();
-                    break;
-                case TorchGameState.Unloading:
-                    Torch_SessionUnloading();
+                    HookButton();
+                    MySession.OnUnloading += MySession_OnUnloading;
                     break;
             }
         }
 
-        public void Torch_SessionUnloading()
+        private void MySession_OnUnloading()
+        {
+            _scoreTimer.Dispose();
+            _scoreTimer = null;
+
+            Log.Info("Cancelling plugin thread");
+
+            _continueThread.CancelAfter(1000);
+            _pluginThread.Join();
+
+            Log.Info("Pluginthread rejoined");
+        }
+
+        private void KeenSession_OnSavingCheckpoint(VRage.Game.MyObjectBuilder_Checkpoint obj)
+        {
+            SaveConfiguration();
+        }
+
+        public void SaveConfiguration()
         {
             InvokeOnKOTHThread(() => {
                 if (_configuration != null)
@@ -111,30 +135,26 @@ namespace HaE_King_Off_The_Hill
                     Log.Info($"Saved configuration");
                 }
             });
-
-        }
-        private void Torch_SessionLoaded()
-        {
-            HookButton();
         }
 
         public void TimerCallback(object state) {
-            InvokeOnKOTHThread(() => { 
-                if (_king != 0)
+                InvokeOnKOTHThread(() =>
                 {
-                    PointCounter counter = null;
-
-                    if (!_pointCounters.TryGetValue(_king, out counter))
+                    if (_king != 0)
                     {
-                        counter = new PointCounter(_king, 0);
-                        _pointCounters.TryAdd(_king, counter);
+                        PointCounter counter = null;
+
+                        if (!_pointCounters.TryGetValue(_king, out counter))
+                        {
+                            counter = new PointCounter(_king, 0);
+                            _pointCounters.TryAdd(_king, counter);
+                        }
+
+                        counter.AddScore(_configuration.Data.Configuration.PointsPerPeriod);
                     }
 
-                    counter.AddScore(_configuration.Data.Configuration.PointsPerPeriod);
-                }
-
-                UpdateScoreBoard();
-            });
+                    UpdateScoreBoard();
+                });
         }
 
         public void TakeControl(long factionId)
@@ -190,7 +210,7 @@ namespace HaE_King_Off_The_Hill
 
             Log.Info($"Updated configuration: {config.ToString()}");
 
-            Torch_SessionUnloading();
+            SaveConfiguration();
 
             int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
@@ -275,6 +295,9 @@ namespace HaE_King_Off_The_Hill
                 InvokeOnKOTHThread(() => {
                     TakeControl(faction.FactionId);
                 });
+            } else
+            {
+                Utilities.SendPlayerMessage(Torch, "You have to be in a faction to control the hill!", closest.SteamUserId, Color.Red);
             }
         }
 

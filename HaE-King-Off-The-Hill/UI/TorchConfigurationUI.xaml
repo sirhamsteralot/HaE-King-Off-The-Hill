@@ -18,6 +18,9 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Column="0" Grid.Row="0" Text="Hill Grid" Margin="10" VerticalAlignment="Center"></TextBlock>
@@ -27,6 +30,12 @@
         <TextBlock Grid.Column="0" Grid.Row="1" Text="Button Name" Margin="10" VerticalAlignment="Center"></TextBlock>
         <TextBox x:Name="buttonName_tb" Grid.Column="1" Grid.Row="1" Margin="10" ToolTip="Exact Name of the button on the grid"></TextBox>
 
-        <Button Grid.Column="1" Grid.Row="4" Margin="10" Content="Apply Changes" Click="Apply_Click"></Button>
+        <TextBlock Grid.Column="0" Grid.Row="2" Text="Points Per Period" Margin="10" VerticalAlignment="Center"></TextBlock>
+        <TextBox x:Name="pointsperperiod_tb" Grid.Column="1" Grid.Row="2" Margin="10" ToolTip="Points per time period"></TextBox>
+
+        <TextBlock Grid.Column="0" Grid.Row="3" Text="PeriodTime" Margin="10" VerticalAlignment="Center"></TextBlock>
+        <TextBox x:Name="periodtime_tb" Grid.Column="1" Grid.Row="3" Margin="10" ToolTip="Point awarding period in S"></TextBox>
+
+        <Button Grid.Column="1" Grid.Row="7" Margin="10" Content="Apply Changes" Click="Apply_Click"></Button>
     </Grid>
 </UserControl>

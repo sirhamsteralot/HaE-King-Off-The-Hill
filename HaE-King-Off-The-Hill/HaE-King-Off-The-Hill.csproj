@@ -115,6 +115,7 @@
     <Compile Include="UI\TorchConfigurationUI.xaml.cs">
       <DependentUpon>TorchConfigurationUI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\TorchConfigurationUI.xaml">

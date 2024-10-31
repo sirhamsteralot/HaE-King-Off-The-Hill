@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace HaE_King_Off_The_Hill.UI
     public partial class TorchConfigurationUI : UserControl
     {
         private KingOffTheHill kingOfTheHillPlugin = null;
+        private readonly Logger Log = LogManager.GetCurrentClassLogger();
 
 
         public TorchConfigurationUI(KingOffTheHill kingOfTheHillPlugin)
@@ -32,12 +34,46 @@ namespace HaE_King_Off_The_Hill.UI
             gridEntityId_tb.Text = configuration.ButtonGridEntityId.ToString();
             makeInvulnerable_cb.IsChecked = configuration.ButtonGridInvulnerable;
             buttonName_tb.Text = configuration.ButtonName;
+            pointsperperiod_tb.Text = configuration.PointsPerPeriod.ToString();
+            periodtime_tb.Text = configuration.PeriodTimeS.ToString();
         }
 
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
+            bool parsingSuccess = true;
+
             if (!long.TryParse(gridEntityId_tb.Text, out long gridEntityId))
+            {
+                gridEntityId_tb.BorderBrush = Brushes.Red;
+                parsingSuccess = false;
+            } else
+            {
+                gridEntityId_tb.BorderBrush = Brushes.Transparent;
+            }
+
+            if (!int.TryParse(pointsperperiod_tb.Text, out int pointsPerPeriod))
+            {
+                pointsperperiod_tb.BorderBrush = Brushes.Red;
+                parsingSuccess = false;
+            } else
+            {
+                pointsperperiod_tb.BorderBrush = Brushes.Transparent;
+            }
+
+            if (!int.TryParse(periodtime_tb.Text, out int periodTimeS))
+            {
+                periodtime_tb.BorderBrush = Brushes.Red;
+                parsingSuccess = false;
+            } else
+            {
+                periodtime_tb.BorderBrush = Brushes.Transparent;
+            }
+
+            if (!parsingSuccess)
+            {
+                Log.Warn("Parsing config from torch UI Failed!");
                 return;
+            }
 
             string buttonNameCopy = String.Copy(buttonName_tb.Text);
             bool invulnerableCopy = makeInvulnerable_cb.IsChecked ?? false;
@@ -48,6 +84,8 @@ namespace HaE_King_Off_The_Hill.UI
                 options.ButtonGridEntityId = gridEntityId;
                 options.ButtonName = buttonNameCopy;
                 options.ButtonGridInvulnerable = invulnerableCopy;
+                options.PointsPerPeriod = pointsPerPeriod;
+                options.PeriodTimeS = periodTimeS;
 
                 kingOfTheHillPlugin.UpdateConfiguration(options);
             });
