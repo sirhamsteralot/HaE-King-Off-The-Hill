@@ -15,6 +15,7 @@ namespace HaE_King_Off_The_Hill.Configuration
             public long ButtonGridEntityId { get; set; }
             public bool ButtonGridInvulnerable { get; set; }
             public string ButtonName { get; set; } = "";
+            public long InterferenceOwnerId { get; set; }
 
             public Options()
             {
@@ -27,11 +28,12 @@ namespace HaE_King_Off_The_Hill.Configuration
                 this.ButtonGridEntityId = clone.ButtonGridEntityId;
                 this.ButtonGridInvulnerable = clone.ButtonGridInvulnerable;
                 this.ButtonName = String.Copy(clone.ButtonName);
+                this.InterferenceOwnerId = clone.InterferenceOwnerId;
             }
 
             public override string ToString()
             {
-                return $"{PeriodTimeS}, {PointsPerPeriod}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
+                return $"{PeriodTimeS}, {PointsPerPeriod}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}, {InterferenceOwnerId}";
             }
         }
 

@@ -84,7 +84,7 @@ namespace HaE_King_Off_The_Hill
             }
 
             Scoreboard = new ClientScoreboard();
-            InterferenceManager = new InterferenceManager();
+            InterferenceManager = new InterferenceManager(_configuration.Data.Configuration.InterferenceOwnerId);
 
             int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
