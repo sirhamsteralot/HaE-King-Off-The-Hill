@@ -2,6 +2,7 @@
 using HaE_King_Off_The_Hill.UI;
 using NLog;
 using Sandbox;
+using Sandbox.Engine.Multiplayer;
 using Sandbox.Engine.Utils;
 using Sandbox.Game;
 using Sandbox.Game.Entities;
@@ -15,6 +16,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -98,8 +100,15 @@ namespace HaE_King_Off_The_Hill
                     HookButton();
                     MySession.OnUnloading += MySession_OnUnloading;
                     MySession.OnSaved += KeenSession_OnSavingCheckpoint;
+                    MyMultiplayer.Static.ClientJoined += Static_ClientJoined;
                     break;
             }
+        }
+
+        private void Static_ClientJoined(ulong arg1, string arg2)
+        {
+            long playerId = MyAPIGateway.Players.TryGetIdentityId(arg1);
+            Scoreboard.EnableDisplay(playerId, false);
         }
 
         private void MySession_OnUnloading()
