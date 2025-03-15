@@ -335,7 +335,7 @@ namespace HaE_King_Off_The_Hill
                 if (faction.FactionId != _king)
                 {
                     Utilities.SendPlayerMessage(Torch, $"{playerName} Took control for {factionTag}! use !koth show to view scoreboard", 0ul, Color.Red);
-                    Scoreboard.KingTag = $" [{factionTag}]";
+                    Scoreboard.KingTag = factionTag;
                 }
 
                 InvokeOnKOTHThread(() => {
