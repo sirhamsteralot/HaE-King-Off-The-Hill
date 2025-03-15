@@ -35,6 +35,7 @@ namespace HaE_King_Off_The_Hill.Commands
         {
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, true);
+            Context.Respond("Scoreboard Shown (it will show up when the points get updated)");
         }
 
         [Command("hide", "disables showing scoreboard for player")]
@@ -43,6 +44,7 @@ namespace HaE_King_Off_The_Hill.Commands
         {
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, false);
+            Context.Respond("Scoreboard Hidden");
         }
 
         [Command("enable", "enables/disables score counting")]
