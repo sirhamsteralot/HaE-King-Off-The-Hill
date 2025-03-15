@@ -2,6 +2,7 @@
 using HaE_King_Off_The_Hill.UI;
 using NLog;
 using Sandbox;
+using Sandbox.Engine.Multiplayer;
 using Sandbox.Engine.Utils;
 using Sandbox.Game;
 using Sandbox.Game.Entities;
@@ -15,6 +16,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -98,8 +100,15 @@ namespace HaE_King_Off_The_Hill
                     HookButton();
                     MySession.OnUnloading += MySession_OnUnloading;
                     MySession.OnSaved += KeenSession_OnSavingCheckpoint;
+                    MyMultiplayer.Static.ClientJoined += Static_ClientJoined;
                     break;
             }
+        }
+
+        private void Static_ClientJoined(ulong arg1, string arg2)
+        {
+            long playerId = MyAPIGateway.Players.TryGetIdentityId(arg1);
+            Scoreboard.EnableDisplay(playerId, false);
         }
 
         private void MySession_OnUnloading()
@@ -167,6 +176,15 @@ namespace HaE_King_Off_The_Hill
             {
                 _configuration.Data.Configuration.ScoreCountingEnabled = IsScoreCountingEnabled;
                 _configuration.Save();
+
+                if (IsScoreCountingEnabled)
+                {
+                    Utilities.SendPlayerMessage(Torch, $"Score Counting Enabled! use !koth show to view scoreboard", 0ul, Color.Red);
+                }
+                else
+                {
+                    Utilities.SendPlayerMessage(Torch, $"Score Counting Disabled! use !koth hide to hide scoreboard", 0ul, Color.Red);
+                }
             });
         }
 
@@ -306,11 +324,20 @@ namespace HaE_King_Off_The_Hill
                 return false;
             });
 
-            Log.Info($"Button {buttonId} Pressed by {closest?.DisplayName ?? "error"}!");
+            string playerName = closest?.DisplayName ?? "error";
+            Log.Info($"Button {buttonId} Pressed by {playerName}!");
+
 
             var faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(closest.PlayerID);
             if (faction != null)
             {
+                string factionTag = faction.Tag;
+                if (faction.FactionId != _king)
+                {
+                    Utilities.SendPlayerMessage(Torch, $"{playerName} Took control for {factionTag}! use !koth show to view scoreboard", 0ul, Color.Red);
+                    Scoreboard.KingTag = factionTag;
+                }
+
                 InvokeOnKOTHThread(() => {
                     TakeControl(faction.FactionId);
                 });
