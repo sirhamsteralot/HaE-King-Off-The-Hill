@@ -60,7 +60,7 @@ namespace HaE_King_Off_The_Hill.Commands
         {
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.SetScoreCounting(false);
-            kothPlugin.Scoreboard.ExtraText = " Score Counting Disabled";
+            kothPlugin.Scoreboard.ExtraText = "Counting Currently Disabled";
 
         }
     }

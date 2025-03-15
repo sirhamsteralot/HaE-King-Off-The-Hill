@@ -106,6 +106,8 @@ namespace HaE_King_Off_The_Hill
             _scoreTimer.Dispose();
             _scoreTimer = null;
 
+            SaveConfiguration();
+
             Log.Info("Cancelling plugin thread");
 
             _continueThread.CancelAfter(1000);
