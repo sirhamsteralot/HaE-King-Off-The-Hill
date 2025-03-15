@@ -306,11 +306,16 @@ namespace HaE_King_Off_The_Hill
                 return false;
             });
 
-            Log.Info($"Button {buttonId} Pressed by {closest?.DisplayName ?? "error"}!");
+            string playerName = closest?.DisplayName ?? "error";
+            Log.Info($"Button {buttonId} Pressed by {playerName}!");
+
 
             var faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(closest.PlayerID);
             if (faction != null)
             {
+                string factionTag = faction.Tag;
+                Utilities.SendPlayerMessage(Torch, $"{playerName} Took control for {factionTag}! use !koth show to view scoreboard", 0ul, Color.Red);
+
                 InvokeOnKOTHThread(() => {
                     TakeControl(faction.FactionId);
                 });
