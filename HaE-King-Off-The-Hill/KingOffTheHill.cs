@@ -97,6 +97,7 @@ namespace HaE_King_Off_The_Hill
                 case TorchGameState.Loaded:
                     HookButton();
                     MySession.OnUnloading += MySession_OnUnloading;
+                    MySession.OnSaved += KeenSession_OnSavingCheckpoint;
                     break;
             }
         }
@@ -116,7 +117,7 @@ namespace HaE_King_Off_The_Hill
             Log.Info("Pluginthread rejoined");
         }
 
-        private void KeenSession_OnSavingCheckpoint(VRage.Game.MyObjectBuilder_Checkpoint obj)
+        private void KeenSession_OnSavingCheckpoint(bool success, string name)
         {
             SaveConfiguration();
         }
