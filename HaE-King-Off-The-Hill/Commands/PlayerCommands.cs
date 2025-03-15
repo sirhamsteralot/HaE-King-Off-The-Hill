@@ -51,7 +51,6 @@ namespace HaE_King_Off_The_Hill.Commands
         {
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.SetScoreCounting(true);
-            kothPlugin.Scoreboard.ExtraText = string.Empty;
         }
 
         [Command("disable", "enables/disables score counting")]
@@ -60,7 +59,6 @@ namespace HaE_King_Off_The_Hill.Commands
         {
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.SetScoreCounting(false);
-            kothPlugin.Scoreboard.ExtraText = " [Counting Currently Disabled]";
         }
     }
 }
