@@ -167,6 +167,15 @@ namespace HaE_King_Off_The_Hill
             {
                 _configuration.Data.Configuration.ScoreCountingEnabled = IsScoreCountingEnabled;
                 _configuration.Save();
+
+                if (IsScoreCountingEnabled)
+                {
+                    Utilities.SendPlayerMessage(Torch, $"Score Counting Enabled! use !koth show to view scoreboard", 0ul, Color.Red);
+                }
+                else
+                {
+                    Utilities.SendPlayerMessage(Torch, $"Score Counting Disabled! use !koth hide to hide scoreboard", 0ul, Color.Red);
+                }
             });
         }
 
@@ -314,7 +323,10 @@ namespace HaE_King_Off_The_Hill
             if (faction != null)
             {
                 string factionTag = faction.Tag;
-                Utilities.SendPlayerMessage(Torch, $"{playerName} Took control for {factionTag}! use !koth show to view scoreboard", 0ul, Color.Red);
+                if (faction.FactionId != _king)
+                {
+                    Utilities.SendPlayerMessage(Torch, $"{playerName} Took control for {factionTag}! use !koth show to view scoreboard", 0ul, Color.Red);
+                }
 
                 InvokeOnKOTHThread(() => {
                     TakeControl(faction.FactionId);
