@@ -11,6 +11,7 @@ namespace HaE_King_Off_The_Hill.UI
     public class ClientScoreboard
     {
         public HashSet<long> EnabledPlayers { get; set; } = new HashSet<long>();
+        public string ExtraText { get; set; } = "";
 
         public ClientScoreboard() { }
 
@@ -32,7 +33,7 @@ namespace HaE_King_Off_The_Hill.UI
             foreach (var playerId in EnabledPlayers)
             {
                 MyVisualScriptLogicProvider.SetQuestlogVisible(true, playerId);
-                MyVisualScriptLogicProvider.SetQuestlogTitle("KOTH Score", playerId);
+                MyVisualScriptLogicProvider.SetQuestlogTitle($"KOTH Score [{ExtraText}]", playerId);
                 MyVisualScriptLogicProvider.RemoveQuestlogDetails(playerId);
 
                 foreach (var pointCounter in pointCounters)

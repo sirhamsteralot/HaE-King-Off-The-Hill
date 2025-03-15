@@ -44,5 +44,24 @@ namespace HaE_King_Off_The_Hill.Commands
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.Scoreboard.EnableDisplay(Context.Player.IdentityId, false);
         }
+
+        [Command("enable", "enables/disables score counting")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void Enable()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            kothPlugin.SetScoreCounting(true);
+            kothPlugin.Scoreboard.ExtraText = string.Empty;
+        }
+
+        [Command("disable", "enables/disables score counting")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void Disable()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            kothPlugin.SetScoreCounting(false);
+            kothPlugin.Scoreboard.ExtraText = "Counting Currently Disabled";
+
+        }
     }
 }

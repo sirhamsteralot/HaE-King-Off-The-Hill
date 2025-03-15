@@ -97,6 +97,7 @@ namespace HaE_King_Off_The_Hill
                 case TorchGameState.Loaded:
                     HookButton();
                     MySession.OnUnloading += MySession_OnUnloading;
+                    MySession.OnSaved += KeenSession_OnSavingCheckpoint;
                     break;
             }
         }
@@ -106,6 +107,8 @@ namespace HaE_King_Off_The_Hill
             _scoreTimer.Dispose();
             _scoreTimer = null;
 
+            SaveConfiguration();
+
             Log.Info("Cancelling plugin thread");
 
             _continueThread.CancelAfter(1000);
@@ -114,7 +117,7 @@ namespace HaE_King_Off_The_Hill
             Log.Info("Pluginthread rejoined");
         }
 
-        private void KeenSession_OnSavingCheckpoint(VRage.Game.MyObjectBuilder_Checkpoint obj)
+        private void KeenSession_OnSavingCheckpoint(bool success, string name)
         {
             SaveConfiguration();
         }
@@ -140,7 +143,8 @@ namespace HaE_King_Off_The_Hill
         public void TimerCallback(object state) {
                 InvokeOnKOTHThread(() =>
                 {
-                    if (_king != 0)
+
+                    if (_king != 0 && _configuration.Data.Configuration.ScoreCountingEnabled)
                     {
                         PointCounter counter = null;
 
@@ -157,10 +161,25 @@ namespace HaE_King_Off_The_Hill
                 });
         }
 
+        public void SetScoreCounting(bool IsScoreCountingEnabled)
+        {
+            InvokeOnKOTHThread(() =>
+            {
+                _configuration.Data.Configuration.ScoreCountingEnabled = IsScoreCountingEnabled;
+                _configuration.Save();
+            });
+        }
+
         public void TakeControl(long factionId)
         {
             if (factionId == 0)
                 return;
+
+            if (!_configuration.Data.Configuration.ScoreCountingEnabled)
+            {
+                Log.Warn($"{factionId} Tried to take control, however score counting is disabled right now!");
+                return;
+            }
 
             Log.Info($"{factionId} Took Control!");
 
