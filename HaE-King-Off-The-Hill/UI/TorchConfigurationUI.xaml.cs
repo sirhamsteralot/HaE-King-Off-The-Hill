@@ -32,7 +32,7 @@ namespace HaE_King_Off_The_Hill.UI
 
             var configuration = kingOfTheHillPlugin.GetConfiguration();
             gridEntityId_tb.Text = configuration.ButtonGridEntityId.ToString();
-            makeInvulnerable_cb.IsChecked = configuration.ButtonGridInvulnerable;
+            scoreCountingEnabled_cb.IsChecked = configuration.ScoreCountingEnabled;
             buttonName_tb.Text = configuration.ButtonName;
             pointsperperiod_tb.Text = configuration.PointsPerPeriod.ToString();
             periodtime_tb.Text = configuration.PeriodTimeS.ToString();
@@ -76,14 +76,14 @@ namespace HaE_King_Off_The_Hill.UI
             }
 
             string buttonNameCopy = String.Copy(buttonName_tb.Text);
-            bool invulnerableCopy = makeInvulnerable_cb.IsChecked ?? false;
+            bool invulnerableCopy = scoreCountingEnabled_cb.IsChecked ?? false;
 
             kingOfTheHillPlugin.InvokeOnKOTHThread(() => {
                 var options = new Configuration.KingOfTheHillConfig.Options();
 
                 options.ButtonGridEntityId = gridEntityId;
                 options.ButtonName = buttonNameCopy;
-                options.ButtonGridInvulnerable = invulnerableCopy;
+                options.ScoreCountingEnabled = invulnerableCopy;
                 options.PointsPerPeriod = pointsPerPeriod;
                 options.PeriodTimeS = periodTimeS;
 

@@ -140,7 +140,8 @@ namespace HaE_King_Off_The_Hill
         public void TimerCallback(object state) {
                 InvokeOnKOTHThread(() =>
                 {
-                    if (_king != 0)
+
+                    if (_king != 0 && _configuration.Data.Configuration.ScoreCountingEnabled)
                     {
                         PointCounter counter = null;
 
@@ -157,10 +158,25 @@ namespace HaE_King_Off_The_Hill
                 });
         }
 
+        public void SetScoreCounting(bool IsScoreCountingEnabled)
+        {
+            InvokeOnKOTHThread(() =>
+            {
+                _configuration.Data.Configuration.ScoreCountingEnabled = IsScoreCountingEnabled;
+                _configuration.Save();
+            });
+        }
+
         public void TakeControl(long factionId)
         {
             if (factionId == 0)
                 return;
+
+            if (!_configuration.Data.Configuration.ScoreCountingEnabled)
+            {
+                Log.Warn($"{factionId} Tried to take control, however score counting is disabled right now!");
+                return;
+            }
 
             Log.Info($"{factionId} Took Control!");
 

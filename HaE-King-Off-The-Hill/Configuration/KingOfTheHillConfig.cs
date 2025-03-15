@@ -13,7 +13,7 @@ namespace HaE_King_Off_The_Hill.Configuration
             public int PeriodTimeS { get; set; } = 10;
             public int PointsPerPeriod { get; set; } = 1;
             public long ButtonGridEntityId { get; set; }
-            public bool ButtonGridInvulnerable { get; set; }
+            public bool ScoreCountingEnabled { get; set; } = true;
             public string ButtonName { get; set; } = "";
 
             public Options()
@@ -25,13 +25,13 @@ namespace HaE_King_Off_The_Hill.Configuration
                 this.PeriodTimeS = clone.PeriodTimeS;
                 this.PointsPerPeriod = clone.PointsPerPeriod;
                 this.ButtonGridEntityId = clone.ButtonGridEntityId;
-                this.ButtonGridInvulnerable = clone.ButtonGridInvulnerable;
+                this.ScoreCountingEnabled = clone.ScoreCountingEnabled;
                 this.ButtonName = String.Copy(clone.ButtonName);
             }
 
             public override string ToString()
             {
-                return $"{PeriodTimeS}, {PointsPerPeriod}, {ButtonGridEntityId}, {ButtonGridInvulnerable}, {ButtonName}";
+                return $"{PeriodTimeS}, {PointsPerPeriod}, {ButtonGridEntityId}, {ButtonName}, {ScoreCountingEnabled}";
             }
         }
 
