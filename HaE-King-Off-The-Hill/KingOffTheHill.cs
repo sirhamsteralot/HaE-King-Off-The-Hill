@@ -188,6 +188,15 @@ namespace HaE_King_Off_The_Hill
             });
         }
 
+        public void ResetScrore()
+        {
+            InvokeOnKOTHThread(() =>
+            {
+                _configuration.Data.Counters.Clear();
+                _configuration.Save();
+            });
+        }
+
         public void TakeControl(long factionId)
         {
             if (factionId == 0)

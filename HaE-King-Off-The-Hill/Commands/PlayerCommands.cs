@@ -62,5 +62,14 @@ namespace HaE_King_Off_The_Hill.Commands
             var kothPlugin = Context.Plugin as KingOffTheHill;
             kothPlugin.SetScoreCounting(false);
         }
+
+        [Command("reset", "resets score counting")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void Reset()
+        {
+            var kothPlugin = Context.Plugin as KingOffTheHill;
+            kothPlugin.ResetScrore();
+            Context.Respond("Scoreboard Cleared!");
+        }
     }
 }
