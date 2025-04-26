@@ -192,8 +192,11 @@ namespace HaE_King_Off_The_Hill
         {
             InvokeOnKOTHThread(() =>
             {
+                _pointCounters.Clear();
                 _configuration.Data.Counters.Clear();
                 _configuration.Save();
+
+                UpdateScoreBoard();
             });
         }
 
