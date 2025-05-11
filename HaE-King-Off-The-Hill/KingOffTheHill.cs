@@ -101,7 +101,26 @@ namespace HaE_King_Off_The_Hill
                     MySession.OnUnloading += MySession_OnUnloading;
                     MySession.OnSaved += KeenSession_OnSavingCheckpoint;
                     MyMultiplayer.Static.ClientJoined += Static_ClientJoined;
+                    MySession.Static.Players.PlayerCharacterDied += Players_PlayerCharacterDied;
                     break;
+            }
+        }
+
+        private void Players_PlayerCharacterDied(long playerId)
+        {
+            MyPlayer myplayer = MySession.Static.Players.TryGetPlayer(playerId);
+            if (myplayer != null) {
+                Log.Info($"{myplayer.DisplayName} died!");
+            }
+
+            var faction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(playerId);
+            if (faction != null)
+            {
+                Utilities.SendPlayerMessage(Torch, $"{faction.Tag}! lost points to a death", 0ul, Color.Red);
+
+                InvokeOnKOTHThread(() => {
+                    DeductPoints(faction.FactionId);
+                });
             }
         }
 
@@ -221,6 +240,14 @@ namespace HaE_King_Off_The_Hill
             {
                 counter = new PointCounter(_king, 0);
                 _pointCounters.TryAdd(factionId, counter);
+            }
+        }
+
+        public void DeductPoints(long factionId)
+        {
+            if (_pointCounters.TryGetValue(factionId, out var counter))
+            {
+                counter.AddScore(-1 * _configuration.Data.Configuration.PointsDeductedOnDeath);
             }
         }
 

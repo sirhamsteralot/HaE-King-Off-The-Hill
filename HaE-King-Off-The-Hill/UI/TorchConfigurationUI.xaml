@@ -36,6 +36,9 @@
         <TextBlock Grid.Column="0" Grid.Row="3" Text="PeriodTime" Margin="10" VerticalAlignment="Center"></TextBlock>
         <TextBox x:Name="periodtime_tb" Grid.Column="1" Grid.Row="3" Margin="10" ToolTip="Point awarding period in S"></TextBox>
 
+        <TextBlock Grid.Column="0" Grid.Row="4" Text="PeriodTime" Margin="10" VerticalAlignment="Center"></TextBlock>
+        <TextBox x:Name="playerdeath_tb" Grid.Column="1" Grid.Row="4" Margin="10" ToolTip="Points deducted on player death"></TextBox>
+
         <Button Grid.Column="1" Grid.Row="7" Margin="10" Content="Apply Changes" Click="Apply_Click"></Button>
     </Grid>
 </UserControl>

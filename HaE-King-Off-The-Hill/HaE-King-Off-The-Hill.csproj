@@ -99,6 +99,7 @@
     <Reference Include="VRage.Game">
       <HintPath>..\Bin64\VRage.Game.dll</HintPath>
     </Reference>
+    <Reference Include="VRage.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="VRage.Math, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Bin64\VRage.Math.dll</HintPath>

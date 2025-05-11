@@ -69,6 +69,16 @@ namespace HaE_King_Off_The_Hill.UI
                 periodtime_tb.BorderBrush = Brushes.Transparent;
             }
 
+            if (!int.TryParse(playerdeath_tb.Text, out int pointsPerDeath))
+            {
+                playerdeath_tb.BorderBrush = Brushes.Red;
+                parsingSuccess = false;
+            }
+            else
+            {
+                playerdeath_tb.BorderBrush = Brushes.Transparent;
+            }
+
             if (!parsingSuccess)
             {
                 Log.Warn("Parsing config from torch UI Failed!");
@@ -86,6 +96,7 @@ namespace HaE_King_Off_The_Hill.UI
                 options.ScoreCountingEnabled = invulnerableCopy;
                 options.PointsPerPeriod = pointsPerPeriod;
                 options.PeriodTimeS = periodTimeS;
+                options.PointsDeductedOnDeath = pointsPerDeath;
 
                 kingOfTheHillPlugin.UpdateConfiguration(options);
             });
