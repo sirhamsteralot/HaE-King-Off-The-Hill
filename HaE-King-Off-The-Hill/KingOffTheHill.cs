@@ -291,7 +291,8 @@ namespace HaE_King_Off_The_Hill
             int periodTimeMs = _configuration.Data.Configuration.PeriodTimeS * 1000;
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
 
-            HookButton();
+            if (Torch.CurrentSession.KeenSession != null)
+                HookButton();
         }
 
         public void HookButton()
