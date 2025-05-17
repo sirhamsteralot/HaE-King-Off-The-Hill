@@ -245,9 +245,15 @@ namespace HaE_King_Off_The_Hill
 
         public void DeductPoints(long factionId)
         {
-            if (_pointCounters.TryGetValue(factionId, out var counter))
-            {
-                counter.AddScore(-1 * _configuration.Data.Configuration.PointsDeductedOnDeath);
+            List<PointCounter> sortedCounters = _pointCounters.Values.ToList();
+            sortedCounters.Sort((x, y) => { return x.Points.CompareTo(y.Points); });
+
+            for (int i = 0; i < sortedCounters.Count; i++) {
+                if (sortedCounters[i].FactionId == factionId)
+                {
+                    sortedCounters[i].AddScore(-1 * (int)Math.Round(_configuration.Data.Configuration.PointsDeductedOnDeath * (_configuration.Data.Configuration.PointsDeductedOnDeathPositionMultiplier * i)));
+                    break;
+                }
             }
         }
 

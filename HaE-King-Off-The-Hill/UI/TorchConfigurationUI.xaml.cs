@@ -79,6 +79,16 @@ namespace HaE_King_Off_The_Hill.UI
                 playerdeath_tb.BorderBrush = Brushes.Transparent;
             }
 
+            if (!double.TryParse(playerdeath_mult_tb.Text, out double pointMultiplierFac))
+            {
+                playerdeath_mult_tb.BorderBrush = Brushes.Red;
+                parsingSuccess = false;
+            }
+            else
+            {
+                playerdeath_mult_tb.BorderBrush = Brushes.Transparent;
+            }
+
             if (!parsingSuccess)
             {
                 Log.Warn("Parsing config from torch UI Failed!");
@@ -97,6 +107,7 @@ namespace HaE_King_Off_The_Hill.UI
                 options.PointsPerPeriod = pointsPerPeriod;
                 options.PeriodTimeS = periodTimeS;
                 options.PointsDeductedOnDeath = pointsPerDeath;
+                options.PointsDeductedOnDeathPositionMultiplier = pointMultiplierFac;
 
                 kingOfTheHillPlugin.UpdateConfiguration(options);
             });

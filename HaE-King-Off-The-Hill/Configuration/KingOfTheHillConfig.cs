@@ -13,6 +13,7 @@ namespace HaE_King_Off_The_Hill.Configuration
             public int PeriodTimeS { get; set; } = 10;
             public int PointsPerPeriod { get; set; } = 1;
             public int PointsDeductedOnDeath { get; set; } = 10;
+            public double PointsDeductedOnDeathPositionMultiplier { get; set; } = 0.75;
             public long ButtonGridEntityId { get; set; }
             public bool ScoreCountingEnabled { get; set; } = true;
             public string ButtonName { get; set; } = "";
@@ -26,6 +27,7 @@ namespace HaE_King_Off_The_Hill.Configuration
                 this.PeriodTimeS = clone.PeriodTimeS;
                 this.PointsPerPeriod = clone.PointsPerPeriod;
                 this.PointsDeductedOnDeath = clone.PointsDeductedOnDeath;
+                this.PointsDeductedOnDeathPositionMultiplier = clone.PointsDeductedOnDeathPositionMultiplier;
                 this.ButtonGridEntityId = clone.ButtonGridEntityId;
                 this.ScoreCountingEnabled = clone.ScoreCountingEnabled;
                 this.ButtonName = String.Copy(clone.ButtonName);
@@ -33,7 +35,7 @@ namespace HaE_King_Off_The_Hill.Configuration
 
             public override string ToString()
             {
-                return $"{PeriodTimeS}, {PointsPerPeriod}, {PointsDeductedOnDeath}, {ButtonGridEntityId}, {ButtonName}, {ScoreCountingEnabled}";
+                return $"{PeriodTimeS}, {PointsPerPeriod}, {PointsDeductedOnDeath}, {PointsDeductedOnDeathPositionMultiplier}, {ButtonGridEntityId}, {ButtonName}, {ScoreCountingEnabled}";
             }
         }
 
