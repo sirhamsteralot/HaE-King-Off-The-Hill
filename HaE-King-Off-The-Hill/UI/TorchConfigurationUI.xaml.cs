@@ -36,6 +36,8 @@ namespace HaE_King_Off_The_Hill.UI
             buttonName_tb.Text = configuration.ButtonName;
             pointsperperiod_tb.Text = configuration.PointsPerPeriod.ToString();
             periodtime_tb.Text = configuration.PeriodTimeS.ToString();
+            playerdeath_tb.Text = configuration.PointsDeductedOnDeath.ToString();
+            playerdeath_mult_tb.Text = configuration.PointsDeductedOnDeathPositionMultiplier.ToString();
         }
 
         private void Apply_Click(object sender, RoutedEventArgs e)

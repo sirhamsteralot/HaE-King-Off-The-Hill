@@ -39,8 +39,8 @@
         <TextBlock Grid.Column="0" Grid.Row="4" Text="Player Death Penalty" Margin="10" VerticalAlignment="Center"></TextBlock>
         <TextBox x:Name="playerdeath_tb" Grid.Column="1" Grid.Row="4" Margin="10" ToolTip="Points deducted on player death"></TextBox>
 
-        <TextBlock Grid.Column="0" Grid.Row="4" Text="Faction Position Penalty Multiplier" Margin="10" VerticalAlignment="Center"></TextBlock>
-        <TextBox x:Name="playerdeath_mult_tb" Grid.Column="1" Grid.Row="4" Margin="10" ToolTip="Multiplier for position based player death, points deducted = deductionpoints * position * multiplier"></TextBox>
+        <TextBlock Grid.Column="0" Grid.Row="5" Text="Faction Position Penalty Multiplier" Margin="10" VerticalAlignment="Center"></TextBlock>
+        <TextBox x:Name="playerdeath_mult_tb" Grid.Column="1" Grid.Row="5" Margin="10" ToolTip="Multiplier for position based player death, points deducted = deductionpoints * position * multiplier"></TextBox>
 
         <Button Grid.Column="1" Grid.Row="7" Margin="10" Content="Apply Changes" Click="Apply_Click"></Button>
     </Grid>
