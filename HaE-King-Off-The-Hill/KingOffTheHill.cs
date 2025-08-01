@@ -174,27 +174,34 @@ namespace HaE_King_Off_The_Hill
 
         private void ExportToCsv(string filePath)
         {
-            bool fileExists = File.Exists(filePath);
-
-            using (var writer = new StreamWriter(filePath, append: true))
+            try
             {
-                // Write header only if the file doesn't exist yet
-                if (!fileExists)
+                bool fileExists = File.Exists(filePath);
+
+                using (var writer = new StreamWriter(filePath, append: true))
                 {
-                    writer.WriteLine("FactionId,Points,Time");
+                    // Write header only if the file doesn't exist yet
+                    if (!fileExists)
+                    {
+                        writer.WriteLine("FactionId,Points,Time");
+                    }
+
+                    foreach (var snapshot in _counterSnapshots)
+                    {
+                        long factionId = snapshot.Item1;
+                        int points = snapshot.Item2;
+                        string timeString = snapshot.Item3.ToString("o"); // ISO 8601
+
+                        writer.WriteLine($"{factionId},{points},{timeString}");
+                    }
                 }
 
-                foreach (var snapshot in _counterSnapshots)
-                {
-                    long factionId = snapshot.Item1;
-                    int points = snapshot.Item2;
-                    string timeString = snapshot.Item3.ToString("o"); // ISO 8601
-
-                    writer.WriteLine($"{factionId},{points},{timeString}");
-                }
+                _counterSnapshots.Clear();
             }
-
-            _counterSnapshots.Clear();
+            catch (Exception ex)
+            {
+                Log.Warn(ex, "error writing points to file!");
+            }
         }
 
         public void TimerCallback(object state) {
