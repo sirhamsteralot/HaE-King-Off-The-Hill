@@ -41,6 +41,8 @@ namespace HaE_King_Off_The_Hill
         private Persistent<KingOfTheHillConfig> _configuration = null;
         private ConcurrentDictionary<long, PointCounter> _pointCounters = null;
 
+        private List<Tuple<long, int, DateTime>> _counterSnapshots = new List<Tuple<long, int, DateTime>>();
+
         private BlockingCollection<Action> _actionQueue = null;
         private Thread _pluginThread = null;
         private CancellationTokenSource _continueThread = new CancellationTokenSource();
@@ -165,7 +167,34 @@ namespace HaE_King_Off_The_Hill
 
                     Log.Info($"Saved configuration");
                 }
+
+                ExportToCsv(Path.Combine(StoragePath, Name + ".csv"));
             });
+        }
+
+        private void ExportToCsv(string filePath)
+        {
+            bool fileExists = File.Exists(filePath);
+
+            using (var writer = new StreamWriter(filePath, append: true))
+            {
+                // Write header only if the file doesn't exist yet
+                if (!fileExists)
+                {
+                    writer.WriteLine("FactionId,Points,Time");
+                }
+
+                foreach (var snapshot in _counterSnapshots)
+                {
+                    long factionId = snapshot.Item1;
+                    int points = snapshot.Item2;
+                    string timeString = snapshot.Item3.ToString("o"); // ISO 8601
+
+                    writer.WriteLine($"{factionId},{points},{timeString}");
+                }
+            }
+
+            _counterSnapshots.Clear();
         }
 
         public void TimerCallback(object state) {
@@ -280,6 +309,10 @@ namespace HaE_King_Off_The_Hill
         public void UpdateScoreBoard()
         {
             Scoreboard.UpdateDisplay(_pointCounters.Values.ToList());
+            foreach (var counter in _pointCounters.Values)
+            {
+                _counterSnapshots.Add(new Tuple<long, int, DateTime>(counter.FactionId, counter.Points, DateTime.UtcNow));
+            }
         }
 
         /// <summary>
