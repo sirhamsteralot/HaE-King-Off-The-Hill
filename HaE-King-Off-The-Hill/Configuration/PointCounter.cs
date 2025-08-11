@@ -30,7 +30,14 @@ namespace HaE_King_Off_The_Hill.Configuration
 
         public void AddScore(int score)
         {
-            Points += score;
+            if ((Points + score) >= 0)
+            {
+                Points += score;
+            }
+            else
+            {
+                Points = 0;
+            }
         }
 
         public override string ToString()
