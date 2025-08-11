@@ -50,10 +50,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InitializationTests.cs" />
+    <Compile Include="PointCounterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HaE-King-Off-The-Hill\HaE-King-Off-The-Hill.csproj">
+      <Project>{a6fa9c17-ff63-4b35-bbd5-975143ae65d2}</Project>
+      <Name>HaE-King-Off-The-Hill</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
