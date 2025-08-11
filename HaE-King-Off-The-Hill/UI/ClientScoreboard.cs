@@ -38,7 +38,8 @@ namespace HaE_King_Off_The_Hill.UI
 
                 foreach (var pointCounter in pointCounters)
                 {
-                    MyVisualScriptLogicProvider.AddQuestlogDetail(pointCounter.ToString(), false, false, playerId);
+                    if (pointCounter.FactionId != 0)
+                        MyVisualScriptLogicProvider.AddQuestlogDetail(pointCounter.ToString(), false, false, playerId);
                 }
             }
         }
