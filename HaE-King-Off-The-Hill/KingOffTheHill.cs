@@ -282,7 +282,7 @@ namespace HaE_King_Off_The_Hill
         public void DeductPoints(long factionId)
         {
             List<PointCounter> sortedCounters = _pointCounters.Values.ToList();
-            sortedCounters.Sort((x, y) => { return x.Points.CompareTo(y.Points); });
+            sortedCounters.Sort((x, y) => { return y.Points.CompareTo(x.Points); }); // sort from high to low
 
             for (int i = 0; i < sortedCounters.Count; i++) {
                 if (sortedCounters[i].FactionId == factionId)
