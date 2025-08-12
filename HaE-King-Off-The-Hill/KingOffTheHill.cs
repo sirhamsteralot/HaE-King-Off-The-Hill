@@ -338,52 +338,67 @@ namespace HaE_King_Off_The_Hill
             _scoreTimer = new Timer(TimerCallback, this, periodTimeMs, periodTimeMs);
 
             if (Torch.CurrentSession.KeenSession != null)
-                HookButton();
+            {
+                try
+                {
+                    HookButton();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "could not hook the button");
+                }
+            }
+
         }
 
         public void HookButton()
         {
             Torch.Invoke(() => {
-
-                if (_hill != null)
+                try
                 {
-                    _hill.ButtonPressed -= KingOffTheHill_ButtonPressed;
-                }
-
-                if (Torch.CurrentSession?.KeenSession != null)
-                {
-                    MyEntity entity = MyEntities.GetEntityById(_configuration.Data.Configuration.ButtonGridEntityId);
-
-                    if (entity != null)
+                    if (_hill != null)
                     {
-                        IMyCubeGrid cubegrid = entity as IMyCubeGrid;
-                        if (cubegrid == null)
+                        _hill.ButtonPressed -= KingOffTheHill_ButtonPressed;
+                    }
+
+                    if (Torch.CurrentSession?.KeenSession != null)
+                    {
+                        MyEntity entity = MyEntities.GetEntityById(_configuration.Data.Configuration.ButtonGridEntityId);
+
+                        if (entity != null)
                         {
-                            Log.Warn("failed to cast entity to cubegrid!");
-                            return;
+                            IMyCubeGrid cubegrid = entity as IMyCubeGrid;
+                            if (cubegrid == null)
+                            {
+                                Log.Warn("failed to cast entity to cubegrid!");
+                                return;
+                            }
+
+                            Log.Info($"cubegrid {cubegrid.CustomName} found!");
+
+                            List<IMySlimBlock> slimblocks = new List<IMySlimBlock>();
+
+                            cubegrid.GetBlocks(slimblocks, x => { return x.FatBlock is IMyButtonPanel && ((IMyButtonPanel)x.FatBlock).CustomName == _configuration.Data.Configuration.ButtonName; });
+
+                            Log.Info($"{slimblocks.Count()} Found on {cubegrid.CustomName}, hooking to 1st...");
+
+                            if (slimblocks.Count > 0)
+                            {
+                                _hill = slimblocks.First().FatBlock as IMyButtonPanel;
+                                _hill.ButtonPressed += KingOffTheHill_ButtonPressed;
+                                Log.Info($"{_hill.CustomName} Hooked!");
+                            }
                         }
-
-                        Log.Info($"cubegrid {cubegrid.CustomName} found!");
-
-                        List<IMySlimBlock> slimblocks = new List<IMySlimBlock>();
-
-                        cubegrid.GetBlocks(slimblocks, x => { return x.FatBlock is IMyButtonPanel && ((IMyButtonPanel)x.FatBlock).CustomName == _configuration.Data.Configuration.ButtonName; });
-
-                        Log.Info($"{slimblocks.Count()} Found on {cubegrid.CustomName}, hooking to 1st...");
-
-                        if (slimblocks.Count > 0)
+                        else
                         {
-                            _hill = slimblocks.First().FatBlock as IMyButtonPanel;
-                            _hill.ButtonPressed += KingOffTheHill_ButtonPressed;
-                            Log.Info($"{_hill.CustomName} Hooked!");
+                            Log.Warn($"Failed to get cubegrid with ID: {_configuration.Data.Configuration.ButtonGridEntityId} !");
                         }
                     }
-                    else
-                    {
-                        Log.Warn($"Failed to get cubegrid with ID: {_configuration.Data.Configuration.ButtonGridEntityId} !");
-                    }
                 }
-
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "could not hook the button");
+                }
             });
 
         }
