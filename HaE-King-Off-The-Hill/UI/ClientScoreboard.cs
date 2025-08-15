@@ -15,6 +15,12 @@ namespace HaE_King_Off_The_Hill.UI
 
         public ClientScoreboard() { }
 
+        public void CheckOnJoin(long player)
+        {
+            if (!EnabledPlayers.Contains(player))
+                EnableDisplay(player, false);
+        }
+
         public void EnableDisplay(long player, bool enabled = true)
         {
             if (enabled)

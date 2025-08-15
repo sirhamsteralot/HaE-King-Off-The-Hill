@@ -128,8 +128,8 @@ namespace HaE_King_Off_The_Hill
 
         private void Static_ClientJoined(ulong arg1, string arg2)
         {
-            //long playerId = MyAPIGateway.Players.TryGetIdentityId(arg1);
-            //Scoreboard.EnableDisplay(playerId, false);
+            long playerId = MyAPIGateway.Players.TryGetIdentityId(arg1);
+            Scoreboard.CheckOnJoin(playerId);
         }
 
         private void MySession_OnUnloading()
