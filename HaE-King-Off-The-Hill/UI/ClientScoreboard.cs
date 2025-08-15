@@ -36,7 +36,9 @@ namespace HaE_King_Off_The_Hill.UI
                 MyVisualScriptLogicProvider.SetQuestlogTitle($"KOTH Score [{KingTag}]", playerId);
                 MyVisualScriptLogicProvider.RemoveQuestlogDetails(playerId);
 
-                foreach (var pointCounter in pointCounters)
+                var orderedList = pointCounters.OrderByDescending(x => x.Points);
+
+                foreach (var pointCounter in orderedList)
                 {
                     if (pointCounter.FactionId != 0)
                         MyVisualScriptLogicProvider.AddQuestlogDetail(pointCounter.ToString(), false, false, playerId);
